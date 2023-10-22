@@ -1,0 +1,378 @@
+// FileSelectionPage.dart
+import 'package:flutter/material.dart';
+
+class FileSelectionPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Select Files'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Select Files to Hide Payloads',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                // Implement file picker to select text or media files
+                // After file selection, navigate to the Payload Page
+              },
+              child: Text('Select Files'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// EntryPage.dart
+import 'package:flutter/material.dart';
+
+class EntryPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Welcome'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Welcome to Your App!',
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the SMS/Contact Selection Page
+                Navigator.pushNamed(context, '/sms_contact_selection');
+              },
+              child: Text('Send Payload'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the History Page
+                Navigator.pushNamed(context, '/history');
+              },
+              child: Text('View History'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// FileSelectionPage.dart
+import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:share/share.dart';
+import 'package:contact_picker/contact_picker.dart';
+
+class FileSelectionPage extends StatelessWidget {
+  Future<void> _shareFile(BuildContext context) async {
+    // Implement file picker to select text or media files
+    final result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      final filePath = result.files.single.path;
+
+      // Use the ContactPicker package to pick a contact
+      final contactPicker = ContactPicker();
+      final contact = await contactPicker.selectContact();
+
+      if (contact != null) {
+        // After selecting a contact, prompt the user to choose a sharing app
+        final shareTargets = await Share.targets(androidSharePositionOrigin: SharePositionOrigin.bottom);
+
+        if (shareTargets.isNotEmpty) {
+          // Use the Share package to share the file with the selected contact and app
+          Share.shareFiles(
+            [filePath],
+            text: 'Check this out!',
+            subject: 'Shared File',
+            sharePositionOrigin: SharePositionOrigin.bottom,
+            sharePositionedOrigin: Rect.fromCircle(center: Offset(0, 0), radius: 1000),
+          );
+        }
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Select Files'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Select Files to Share:',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                _shareFile(context);
+              },
+              child: Text('Share Files'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// LoginPage.dart
+import 'package:flutter/material.dart';
+
+class LoginPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Welcome Back!',
+                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                  prefixIcon: Icon(Icons.person),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  prefixIcon: Icon(Icons.lock),
+                ),
+                obscureText: true, // Hides the password input
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Perform login logic here
+                  // If login is successful, navigate to the main app page
+                  // Example:
+                  // Navigator.pushReplacementNamed(context, '/main');
+                },
+                child: Text('Login'),
+              ),
+              TextButton(
+                onPressed: () {
+                  // Navigate to the registration page
+                  Navigator.pushNamed(context, '/registration');
+                },
+                child: Text("Don't have an account? Sign up here."),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// MainPage.dart
+import 'package:flutter/material.dart';
+
+class MainPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('XirtaM'), // Replace with your app's name
+      ),
+      body: Stack(
+        children: [
+          MatrixBackground(), // Custom widget for the matrix code background
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ShimmeringText('Welcome to the Matrix'), // Custom widget for shimmering text
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/login'); // Navigate to the Login Page
+                  },
+                  child: Text('Get Started'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MatrixBackground extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Implement your matrix code background here
+    // You can use a GIF, Flare animation, or a custom widget
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/matrix_background.gif'), // Replace with your background
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+}
+
+class ShimmeringText extends StatelessWidget {
+  final String text;
+
+  ShimmeringText(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.white,
+      highlightColor: Colors.purple,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 28.0,
+          color: Colors.purple,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+// PaymentPage.dart
+import 'package:flutter/material.dart';
+
+class PaymentPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Make a Payment'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Unlock Full App Features',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 16),
+            Text(
+              'To access all the features of our app, please make a payment of £2.',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            SizedBox(height: 32),
+            ElevatedButton(
+              onPressed: () {
+                // Implement payment gateway integration here
+                // Redirect to the payment gateway or complete the payment process
+                // If successful, you can update the user's access status
+              },
+              child: Text('Make Payment (£2)'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// SMSContactSelectionPage.dart
+import 'package:flutter/material.dart';
+
+class SMSContactSelectionPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Select Recipients'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Select recipients for your payload:',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the SMS contacts page
+                Navigator.pushNamed(context, '/sms_contacts');
+              },
+              child: Text('Select from SMS Contacts'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.purple, // Button color
+                onPrimary: Colors.white, // Text color
+              ),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the manual entry page
+                Navigator.pushNamed(context, '/manual_entry');
+              },
+              child: Text('Manually Enter Phone Numbers'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.purple, // Button color
+                onPrimary: Colors.white, // Text color
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
